@@ -163,6 +163,9 @@ html[data-mode="blank"] .hint{display:block}
   background:var(--paper);color:var(--ink);font-size:11.5px;line-height:1.5;resize:vertical;outline:none;
   font-family:ui-monospace,Menlo,monospace;word-break:break-all}
 .tagline{font-size:11px;color:var(--red);margin-top:6px}
+.fsprev{font-size:calc(13.9px * var(--fs));line-height:1.86;color:var(--ink-2);margin:9px 0 0;
+  padding:10px 12px;border:1px dashed var(--line);border-radius:10px}
+.fsprev em{font-style:normal;color:var(--ink-3);font-size:10.5px;display:block;margin-bottom:4px;letter-spacing:.1em}
 </style>
 </head>
 <body>
@@ -422,14 +425,16 @@ function openSet(){
       <div class="tagline" id="keytip">${S.key?'已设置密钥 · '+(S.syncAt?'上次生成 '+(new Date(S.syncAt).getMonth()+1)+'/'+new Date(S.syncAt).getDate():'尚未生成同步码'):'尚未设置密钥'}</div>
     </div>
     <div class="sec"><h4>外观</h4><div class="seg">
-      <button class="${S.theme!=='night'?'on':''}" onclick="setTheme('light')">浅色（纸白）</button>
-      <button class="${S.theme==='night'?'on':''}" onclick="setTheme('night')">夜间（护眼）</button>
+      <button data-t="light" class="${S.theme!=='night'?'on':''}" onclick="setTheme('light')">浅色（纸白）</button>
+      <button data-t="night" class="${S.theme==='night'?'on':''}" onclick="setTheme('night')">夜间（护眼）</button>
     </div></div>
     <div class="sec"><h4>正文字号</h4><div class="seg">
-      <button class="${S.fs==='s'?'on':''}" onclick="setFs('s')">小</button>
-      <button class="${S.fs==='m'?'on':''}" onclick="setFs('m')">标准</button>
-      <button class="${S.fs==='l'?'on':''}" onclick="setFs('l')">大</button>
-    </div></div>
+      <button data-f="s" class="${S.fs==='s'?'on':''}" onclick="setFs('s')">小</button>
+      <button data-f="m" class="${S.fs==='m'?'on':''}" onclick="setFs('m')">标准</button>
+      <button data-f="l" class="${S.fs==='l'?'on':''}" onclick="setFs('l')">大</button>
+    </div>
+    <div class="fsprev"><em>预览 · 当前字号</em>实践是检验真理的唯一标准，剩余价值来源于雇佣工人的剩余劳动。</div>
+    </div>
     <div class="sec"><h4>数据</h4>
       <button class="opt" onclick="openExport()"><span>导出进度<small>换设备时复制这段文本</small></span><span class="n">复制 ›</span></button>
       <button class="opt" onclick="openImport()"><span>导入进度<small>粘贴之前导出的文本</small></span><span class="n">粘贴 ›</span></button>
@@ -439,8 +444,13 @@ function openSet(){
   document.getElementById('mask').classList.add('on');
 }
 function closeSet(){ document.getElementById('mask').classList.remove('on'); }
-function setTheme(t){ S.theme=t; save(); document.documentElement.setAttribute('data-theme',t); openSet(); }
-function setFs(f){ S.fs=f; save(); document.documentElement.setAttribute('data-fs',f); openSet(); }
+
+function segSync(){
+  document.querySelectorAll('[data-t]').forEach(b=>b.classList.toggle('on', b.dataset.t===(S.theme==='night'?'night':'light')));
+  document.querySelectorAll('[data-f]').forEach(b=>b.classList.toggle('on', b.dataset.f===(S.fs||'m')));
+}
+function setTheme(t){ S.theme=t; save(); document.documentElement.setAttribute('data-theme',t); segSync(); }
+function setFs(f){ S.fs=f; save(); document.documentElement.setAttribute('data-fs',f); segSync(); }
 /* ---------- 自定义密钥 · 免注册存档 ---------- */
 const SALT='yzy-2027-onepage';
 function keyOf(){ const el=document.getElementById('keyin'); const v=(el?el.value:S.key||'').trim(); return v; }
