@@ -12,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: fetch html
-        run: curl -fsSL --retry 3 -o index.html "https://aka.doubaocdn.com/s/VKG1pUZaYM"
+        run: curl -fsSL --retry 3 -o index.html "https://aka.doubaocdn.com/s/3m37Y8QcXM"
       - name: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git diff --cached --quiet || (git commit -m "sync html [skip ci]" && git push)
+          git diff --cached --quiet || (git commit -m "更新 index.html [skip ci]" && git push)
