@@ -2,16 +2,23 @@
 
 2027 考研政治知识点背诵程序 —— **100 个考点全文铺在一页上连续通读**，同一页切换「通读 / 挖空」两种状态。
 
-## 手机直接用
+## 打开方式
 
-- 程序本体（推荐，可直接加到主屏）：https://aka.doubaocdn.com/s/Adr2dMslV7
-- 本仓库秒跳转入口：https://cdn.jsdelivr.net/gh/kkdlm/politics-true-one-page@main/index.html
+- 已开启 Pages 后：https://kkdlm.github.io/politics-true-one-page/
+- 未开启、先用直链：https://aka.doubaocdn.com/s/Adr2dMslV7
 
-## 仓库里为什么没有源文件
+## 怎么开启 Pages（手机 3 步）
 
-单文件版把 100 条考点全文与史纲脉络图（WebP）内联在一起，共 232,619 字节 / 203,742 字符。
-建仓时所用凭据只能写入小体积文本，无法通过 API 提交 200 KB 以上的单文件，因此本仓库放置跳转入口与说明，程序本体以直链分发。
-若想自行托管原始文件：下载后在 GitHub 网页端 Upload files 上传，再在 Settings → Pages 选择分支即可。
+> GitHub App 里没有这个设置，必须用手机**浏览器**打开网页版 GitHub。
+
+1. 打开 https://github.com/kkdlm/politics-true-one-page/settings/pages
+2. `Source` 选 **Deploy from a branch**；`Branch` 选 **main**，目录保持 **/(root)**
+3. 点 **Save**，等 1～2 分钟，上面的 github.io 地址就能直接跑了（会自动加到主屏幕当 App 用）
+
+## 文件
+
+- `index.html` —— 完整程序本体，232,619 字节 / 203,742 字符，单文件自包含、零外部请求。
+- `.github/workflows/setup.yml` —— 手动触发的同步脚本（在 Actions 里 Run workflow 可从直链重新拉取最新版）。
 
 ## 功能
 
@@ -21,7 +28,7 @@
 - **筛选**：全部 / 待复习 / ★收藏 / 未掌握 + 9 个板块，chip 数字实时联动。
 - **标记**：`○→✓` 已掌握（自动排入 4 天后复习）、`☆→★` 收藏；顶部环形进度条显示掌握百分比。
 - **设置**：浅色 / 夜间、三档字号、导出 / 导入进度（一段 JSON 文本，可跨设备搬运）、清空记录。
-- **离线**：单文件自包含，零外部请求；由脚本内联生成 manifest 与图标，可添加到主屏当 App 用。
+- **离线**：单文件自包含，无外部请求；由脚本内联生成 manifest 与图标，可添加到主屏当 App 用。
 
 ## 验证
 
