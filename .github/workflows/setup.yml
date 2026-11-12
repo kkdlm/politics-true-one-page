@@ -1,18 +1,21 @@
 name: sync-from-cdn
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: write
 jobs:
   sync:
+    if: "!contains(github.event.head_commit.message || '', '[skip ci]')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: fetch html
-        run: curl -fsSL --retry 3 -o index.html "https://aka.doubaocdn.com/s/Adr2dMslV7"
+        run: curl -fsSL --retry 3 -o index.html "https://aka.doubaocdn.com/s/C1Cxo0NRov"
       - name: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git diff --cached --quiet || (git commit -m "sync html" && git push)
+          git diff --cached --quiet || (git commit -m "sync html [skip ci]" && git push)
