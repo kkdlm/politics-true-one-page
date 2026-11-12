@@ -2,7 +2,7 @@
 <html lang="zh-CN" data-theme="light" data-fs="m">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#A5342E">
@@ -27,11 +27,12 @@ html[data-fs="s"]{--fs:.9} html[data-fs="l"]{--fs:1.12}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0}
 body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Helvetica Neue",sans-serif;
-  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
+  -webkit-text-size-adjust:100%;text-size-adjust:100%}
 button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer;padding:0}
 input{font-family:inherit}
 .serif{font-family:"Songti SC","Noto Serif SC",Georgia,"Times New Roman",serif}
-.wrap{max-width:760px;margin:0 auto;padding:0 18px}
+.wrap{max-width:600px;margin:0 auto;padding:0 18px}
 
 /* 顶栏 */
 .top{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line-2)}
@@ -129,7 +130,7 @@ html[data-mode="blank"] .hint{display:block}
 .mask{position:fixed;inset:0;z-index:60;background:rgba(20,16,12,.5);opacity:0;pointer-events:none;transition:.25s;
   display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
 .mask.on{opacity:1;pointer-events:auto}
-.sheet{width:100%;max-width:520px;max-height:86vh;overflow-y:auto;background:var(--card);
+.sheet{width:100%;max-width:520px;max-height:min(86vh,720px);overflow-y:auto;background:var(--card);
   border-radius:18px 18px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom));
   transform:translateY(14px);transition:.25s;box-shadow:0 -12px 40px -20px rgba(0,0,0,.6)}
 .mask.on .sheet{transform:none}
@@ -444,12 +445,12 @@ function refreshProg(){
 function openSet(){
   document.getElementById('shTitle').textContent='设置';
   document.getElementById('shBody').innerHTML=`
-    <div class="sec"><h4>我的密钥 · 免注册存档</h4>
-      <div class="fine">设一个自己的密钥，用它加密把进度存成一段「同步码」。换设备时粘贴同一段码 + 同一密钥，掌握与收藏就回来了。不注册、不上传任何服务器，密钥只存在本机。</div>
+    <div class="sec"><h4>进度备份</h4>
+      <div class="fine">设一个密钥，把掌握与收藏加密成一段备份码。换设备时粘贴这段码、输入同一密钥即可恢复。密钥只存在本机。</div>
       <div class="keyrow"><input id="keyin" value="${esc(S.key||'')}" placeholder="自定义密钥，至少 4 位"></div>
-      <div class="keyrow"><button style="flex:1" onclick="saveKey()">保存密钥</button>
-        <button style="flex:1" onclick="makeCode()">生成同步码</button>
-        <button style="flex:1" onclick="openRestore()">粘贴恢复</button></div>
+      <div class="keyrow"><button style="flex:1" onclick="saveKey()">存密钥</button>
+        <button style="flex:1" onclick="makeCode()">生成备份码</button>
+        <button style="flex:1" onclick="openRestore()">恢复</button></div>
       <div id="codebox"></div>
       <div class="tagline" id="keytip">${S.key?'已设置密钥 · '+(S.syncAt?'上次生成 '+(new Date(S.syncAt).getMonth()+1)+'/'+new Date(S.syncAt).getDate():'尚未生成同步码'):'尚未设置密钥'}</div>
     </div>
@@ -471,9 +472,9 @@ function openSet(){
     </div>
 
     <div class="sec">
-      <h4>关于 · 更新</h4>
-      <button class="opt" onclick="openChangelog()"><span>更新记录<small>${CHANGELOG.length} 个版本 · 当前 v${VER}</small></span><span class="n">›</span></button>
-      <button class="opt" onclick="checkNow()"><span>检查更新<small>手动查一次有没有新版本</small></span><span class="n">查</span></button>
+      <h4>版本</h4>
+      <button class="opt" onclick="openChangelog()"><span>版本记录<small>${CHANGELOG.length} 条 · 当前 v${VER}</small></span><span class="n">›</span></button>
+      <button class="opt" onclick="checkNow()"><span>检查新版本<small>手动查一次</small></span><span class="n">查</span></button>
     </div>
     <div class="fine">共 ${PTS.length} 条考点，全部内容取自《2027 这就是一页纸·知识点手册》原书；数据只存在本机浏览器，不上传任何服务器。</div>`;
   document.getElementById('mask').classList.add('on');
@@ -658,12 +659,16 @@ document.getElementById('q').addEventListener('input',e=>{
   document.head.appendChild(at);
 })();
 
-const VER='1.2';
+const VER='1.2.1';
 const CHANGELOG=[
+ {v:'1.2.1',d:'2026-11-12',t:'尺寸与文案',items:[
+   '手机和平板共用一套尺寸：宽屏只居中留白，不再放大字号',
+   '关掉页面缩放，避免双指误触把版式放大',
+   '设置里的说明文字精简']},
  {v:'1.2',d:'2026-11-12',t:'字号即时反馈 · 我的密钥 · 更新系统',items:[
    '点「小 / 标准 / 大」立刻高亮切换，字号下面加了实时预览条',
    '夜间按钮的选中态同步修复，点完立即反馈',
-   '新增「我的密钥」免注册存档：密钥加密成同步码，换设备粘贴恢复掌握与收藏',
+   '新增进度备份：密钥把进度加密成一段码，换设备粘贴即可恢复',
    '新增更新提示与更新记录：启动时自动查版本，有新版一键更新']},
  {v:'1.1',d:'2026-11-12',t:'托管上线',items:[
    '部署到 GitHub Pages，手机可直接打开、加到主屏']},
@@ -674,7 +679,7 @@ const CHANGELOG=[
    '单文件 232 KB，比完整版小 55%']}
 ];
 function openChangelog(){
-  document.getElementById('shTitle').textContent='更新记录';
+  document.getElementById('shTitle').textContent='版本记录';
   document.getElementById('shBody').innerHTML=`
     <div class="sec">
       ${CHANGELOG.map((c,i)=>`<div class="clog">
@@ -715,7 +720,7 @@ async function checkRemote(manual){
     if(!r.ok) throw new Error('no');
     const j=await r.json();
     if(cmpVer(j.version,VER)>0){
-      verBar('发现新版本 v'+j.version+(j.notes?(' · '+j.notes):''),'立即更新',()=>refreshApp(),true);
+      verBar('有新版本 v'+j.version,'立即更新',()=>refreshApp(),true);
     }else if(manual){ mtoast('已是最新版本 v'+VER); }
   }catch(e){
     if(manual) mtoast('检查不到更新信息（离线或直链打开时正常）');
@@ -726,7 +731,7 @@ function bootVer(){
   let last=null;
   try{ last=localStorage.getItem(KEY+':ver'); localStorage.setItem(KEY+':ver',VER); }catch(e){}
   if(last && last!==VER){
-    verBar('已更新至 v'+VER+'，看看这次改了什么','查看更新',()=>{ openChangelog(); document.getElementById('verbar').classList.remove('show'); },false);
+    verBar('已更新至 v'+VER,'查看版本',()=>{ openChangelog(); document.getElementById('verbar').classList.remove('show'); },false);
   }
   window.__chkAt=Date.now();
   setTimeout(()=>checkRemote(false),1500);
