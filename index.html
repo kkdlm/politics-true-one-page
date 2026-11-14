@@ -790,8 +790,20 @@ document.getElementById('q').addEventListener('input',e=>{
 });
 
 
-const VER='1.2.10';
+const VER='1.2.11';
 const CHANGELOG=[
+ {v:'1.2.11',d:'2026-11-14',t:'启动屏自动停留延长到 3 秒',items:[
+   '自动关闭 2.2 秒 → 3 秒，纸页铺开动画能看完整，也更容易分辨是自动进入还是自己点的',
+   '点击/触摸依然立即进入；硬兜底顺延到 3.8 秒']},
+ {v:'1.2.10',d:'2026-11-14',t:'启动屏点一下就进，不显示提示',items:[
+   '不做任何「点击跳过」提示，正常停满自动淡出',
+   '任意触摸/点击/按键/滚轮立即进入，且这次操作不穿透到底层界面',
+   '3 秒硬兜底，异常也不卡在启动页']},
+ {v:'1.2.9',d:'2026-11-14',t:'设置面板右侧滚动指示条消失',items:[
+   '面板本身不再滚动，改成内部内容区滚动，标题栏固定',
+   '内容区右沿伸出面板并被裁掉，系统滚动指示条画在看不见的区域']},
+ {v:'1.2.8',d:'2026-11-14',t:'页面滚动指示条隐藏',items:[
+   '补上全局 scrollbar-width:none 与 ::-webkit-scrollbar 归零，右侧细灰条不再露出']},
  {v:'1.2.5',d:'2026-11-14',t:'启动屏停留时间调正',items:[
    '上一版被 load 回调提前收掉，实际只停了 0.6 秒；去掉这个提前收的入口',
    '现在纸页铺开动画走完后完整停留到 2.2 秒再淡出，点一下仍然立即跳过']},
@@ -904,8 +916,8 @@ setTimeout(bootVer,600);
     setTimeout(()=>{ if(sp.parentNode) sp.remove(); },620); };
   const onAny=e=>{ if(e.cancelable) e.preventDefault(); e.stopPropagation(); closeSplash(); };
   EV.forEach(ev=>document.addEventListener(ev,onAny,true));
-  setTimeout(closeSplash,2200);
-  setTimeout(()=>{ if(!done){ done=true; off(); if(sp.parentNode) sp.remove(); } },3000);
+  setTimeout(closeSplash,3000);
+  setTimeout(()=>{ if(!done){ done=true; off(); if(sp.parentNode) sp.remove(); } },3800);
 })();
 </script>
 
