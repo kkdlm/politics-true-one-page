@@ -15,17 +15,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: fetch html
-        run: curl -fsSL --retry 3 --retry-delay 2 -o index.html "https://aka.doubaocdn.com/s/3VFd2XUCFE"
+        run: curl -fsSL --retry 3 --retry-delay 2 -o index.html "https://aka.doubaocdn.com/s/dtPLNGnNF7"
+      - name: fetch icons
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 3 -o apple-touch-icon.png "https://aka.doubaocdn.com/s/MwwMp4POW7"
+          curl -fsSL --retry 3 -o icon-192.png "https://aka.doubaocdn.com/s/SlxUDO6fjF"
+          curl -fsSL --retry 3 -o icon-512.png "https://aka.doubaocdn.com/s/MzKGMMSU32"
+          curl -fsSL --retry 3 -o manifest.webmanifest "https://aka.doubaocdn.com/s/NUvVPJvdtZ"
+          file apple-touch-icon.png icon-192.png icon-512.png
       - name: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html
+          git add index.html apple-touch-icon.png icon-192.png icon-512.png manifest.webmanifest
           if git diff --cached --quiet; then
-            echo "index.html 已是最新，跳过提交"
+            echo "已是最新，跳过提交"
             exit 0
           fi
-          git commit -m "更新 index.html v1.2.5 [skip ci]"
+          git commit -m "更新 index.html + 主屏图标 v1.2.5 [skip ci]"
           for i in 1 2 3; do
             if git push; then echo "pushed (try $i)"; exit 0; fi
             git pull --rebase --autostash origin main || true
