@@ -7,7 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#EFEDE4">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23EFEDE4'/%3E%3Crect x='4.5' y='4.5' width='55' height='55' rx='3' fill='none' stroke='%23221F19' stroke-width='2' opacity='.85'/%3E%3Crect x='8' y='8' width='48' height='48' rx='2' fill='none' stroke='%23221F19' stroke-width='.8' opacity='.45'/%3E%3Ctext x='32' y='45' font-family='Songti SC,serif' font-size='36' fill='%2317150F' text-anchor='middle'%3E%E7%9C%9F%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='6' fill='%23EFEDE4'/%3E%3Crect x='4.5' y='4.5' width='55' height='55' rx='3' fill='none' stroke='%23221F19' stroke-width='2' opacity='.85'/%3E%3Ctext x='32' y='45' font-family='Songti SC,serif' font-size='36' fill='%2317150F' text-anchor='middle'%3E%E7%9C%9F%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
 <title>政治一页纸 · 真一页</title>
 <style>
 :root{
@@ -757,18 +759,6 @@ document.getElementById('q').addEventListener('input',e=>{
   qTimer=setTimeout(()=>{ Q=e.target.value.trim(); applyFilter(); },140);
 });
 
-/* 添加到主屏的图标与清单 */
-(function(){
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="34" fill="#A5342E"/><text x="96" y="132" font-size="108" text-anchor="middle" fill="#F6E9CE" font-family="serif">页</text></svg>`;
-  const m={name:'政治一页纸·真一页',short_name:'真一页',display:'standalone',orientation:'portrait',
-    background_color:'#F2ECDD',theme_color:'#A5342E',
-    icons:[{src:'data:image/svg+xml;base64,'+btoa(unescape(encodeURIComponent(svg))),sizes:'any',type:'image/svg+xml',purpose:'any maskable'}]};
-  const l=document.createElement('link'); l.rel='manifest';
-  l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/manifest+json'}));
-  document.head.appendChild(l);
-  const at=document.createElement('link'); at.rel='apple-touch-icon'; at.href=m.icons[0].src;
-  document.head.appendChild(at);
-})();
 
 const VER='1.2.5';
 const CHANGELOG=[
