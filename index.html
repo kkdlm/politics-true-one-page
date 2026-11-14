@@ -37,7 +37,10 @@ html[data-theme="night"]{
 html[data-fs="s"]{--fs:.9} html[data-fs="l"]{--fs:1.12}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;padding:0;overscroll-behavior:none}
-html{-webkit-overflow-scrolling:auto}
+html{-webkit-overflow-scrolling:auto;overflow-x:hidden}
+/* 隐藏滚动条与右侧滚动指示条（与完整版一致） */
+*{scrollbar-width:none;-ms-overflow-style:none}
+::-webkit-scrollbar{width:0;height:0;background:transparent;display:none}
 body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Helvetica Neue",sans-serif;
   font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
   -webkit-text-size-adjust:100%;text-size-adjust:100%;
@@ -782,7 +785,7 @@ document.getElementById('q').addEventListener('input',e=>{
 });
 
 
-const VER='1.2.7';
+const VER='1.2.8';
 const CHANGELOG=[
  {v:'1.2.5',d:'2026-11-14',t:'启动屏停留时间调正',items:[
    '上一版被 load 回调提前收掉，实际只停了 0.6 秒；去掉这个提前收的入口',
