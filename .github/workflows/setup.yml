@@ -15,10 +15,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: fetch html
-        run: curl -fsSL --retry 3 -o index.html "https://aka.doubaocdn.com/s/REAO2JThVR"
+        run: curl -fsSL --retry 3 --retry-delay 2 -o index.html "https://aka.doubaocdn.com/s/3VFd2XUCFE"
       - name: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add index.html
-          git diff --cached --quiet || (git commit -m "更新 index.html [skip ci]" && git push)
+          if git diff --cached --quiet; then
+            echo "index.html 已是最新，跳过提交"
+            exit 0
+          fi
+          git commit -m "更新 index.html v1.2.5 [skip ci]"
+          for i in 1 2 3; do
+            if git push; then echo "pushed (try $i)"; exit 0; fi
+            git pull --rebase --autostash origin main || true
+          done
+          echo "push 依旧失败" >&2
+          exit 1
