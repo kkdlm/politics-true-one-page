@@ -14,6 +14,9 @@
 <link rel="apple-touch-icon-precomposed" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="startup-1290x2796.png">
+<link rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="startup-1179x2556.png">
+<link rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" href="startup-1170x2532.png">
 <title>政治一页纸 · 真一页</title>
 <style>
 :root{
@@ -764,7 +767,7 @@ document.getElementById('q').addEventListener('input',e=>{
 });
 
 
-const VER='1.2.5';
+const VER='1.2.6';
 const CHANGELOG=[
  {v:'1.2.5',d:'2026-11-14',t:'启动屏停留时间调正',items:[
    '上一版被 load 回调提前收掉，实际只停了 0.6 秒；去掉这个提前收的入口',
@@ -882,6 +885,13 @@ setTimeout(bootVer,600);
     document.addEventListener(ev,closeSplash,{once:true,capture:true,passive:true}));
   sp.addEventListener('transitionend',e=>{ if(e.propertyName==='opacity') sp.style.display='none'; });
 })();
+</script>
+
+<script>
+/* 离线缓存：第二次打开直接用本地缓存渲染，避免每次重新下载 4MB 主文件 */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{ navigator.serviceWorker.register('sw.js').catch(()=>{}); });
+}
 </script>
 </body>
 </html>
