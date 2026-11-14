@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: fetch html
-        run: curl -fsSL --retry 3 --retry-delay 2 -o index.html "https://aka.doubaocdn.com/s/dtPLNGnNF7"
+        run: curl -fsSL --retry 3 --retry-delay 2 -o index.html "https://aka.doubaocdn.com/s/TuLhbzybwP"
       - name: fetch icons
         run: |
           set -euo pipefail
@@ -33,7 +33,7 @@ jobs:
             echo "已是最新，跳过提交"
             exit 0
           fi
-          git commit -m "更新 index.html + 主屏图标 v1.2.5 [skip ci]"
+          git commit -m "更新 index.html + 图标声明 v1.2.5 [skip ci]"
           for i in 1 2 3; do
             if git push; then echo "pushed (try $i)"; exit 0; fi
             git pull --rebase --autostash origin main || true
