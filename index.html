@@ -790,7 +790,7 @@ document.getElementById('q').addEventListener('input',e=>{
 });
 
 
-const VER='1.2.9';
+const VER='1.2.10';
 const CHANGELOG=[
  {v:'1.2.5',d:'2026-11-14',t:'启动屏停留时间调正',items:[
    '上一版被 load 回调提前收掉，实际只停了 0.6 秒；去掉这个提前收的入口',
@@ -891,22 +891,21 @@ function bootVer(){
 }
 setTimeout(bootVer,600);
 
-/* ---------- 启动屏收起（原来这个文件没有启动屏，没有现成逻辑，这里补上） ---------- */
-(function(){
+/* ---------- 启动屏：正常停满 2.2 秒，任意点击立即进入（纯兜底，不提示） ---------- */
+(function setupSplash(){
   const sp=document.getElementById('splash');
   if(!sp) return;
   let done=false;
-  function closeSplash(){
-    if(done) return; done=true;
+  const EV=['touchstart','pointerdown','mousedown','click','keydown','wheel'];
+  const off=()=>EV.forEach(ev=>document.removeEventListener(ev,onAny,true));
+  const closeSplash=()=>{ if(done) return; done=true; off();
     sp.classList.add('hide');
-    setTimeout(()=>{ sp.style.display='none'; },620);
-  }
-  // 正文已经同步渲染完，留 1.1s 给纸页铺开的动画
+    sp.addEventListener('transitionend',e=>{ if(e.propertyName==='opacity') sp.style.display='none'; });
+    setTimeout(()=>{ if(sp.parentNode) sp.remove(); },620); };
+  const onAny=e=>{ if(e.cancelable) e.preventDefault(); e.stopPropagation(); closeSplash(); };
+  EV.forEach(ev=>document.addEventListener(ev,onAny,true));
   setTimeout(closeSplash,2200);
-  // 兜底：任何一次触摸/点击都立刻收，绝不会卡在启动页
-  ['touchstart','pointerdown','click','keydown'].forEach(ev=>
-    document.addEventListener(ev,closeSplash,{once:true,capture:true,passive:true}));
-  sp.addEventListener('transitionend',e=>{ if(e.propertyName==='opacity') sp.style.display='none'; });
+  setTimeout(()=>{ if(!done){ done=true; off(); if(sp.parentNode) sp.remove(); } },3000);
 })();
 </script>
 
