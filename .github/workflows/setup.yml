@@ -15,28 +15,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: fetch html
-        run: curl -fsSL --retry 3 --retry-delay 2 -o index.html "https://aka.doubaocdn.com/s/TuLhbzybwP"
-      - name: fetch icons
+        run: curl -fsSL --retry 3 --retry-delay 2 -o index.html "https://aka.doubaocdn.com/s/w0FCfLeiVi"
+      - name: fetch assets
         run: |
           set -euo pipefail
           curl -fsSL --retry 3 -o apple-touch-icon.png "https://aka.doubaocdn.com/s/MwwMp4POW7"
           curl -fsSL --retry 3 -o icon-192.png "https://aka.doubaocdn.com/s/SlxUDO6fjF"
           curl -fsSL --retry 3 -o icon-512.png "https://aka.doubaocdn.com/s/MzKGMMSU32"
           curl -fsSL --retry 3 -o manifest.webmanifest "https://aka.doubaocdn.com/s/NUvVPJvdtZ"
-          file apple-touch-icon.png icon-192.png icon-512.png
+          curl -fsSL --retry 3 -o startup-1290x2796.png "https://aka.doubaocdn.com/s/aeBRrCxcSb"
+          curl -fsSL --retry 3 -o startup-1179x2556.png "https://aka.doubaocdn.com/s/4KfFakAURY"
+          curl -fsSL --retry 3 -o startup-1170x2532.png "https://aka.doubaocdn.com/s/kXkiLsONuN"
+          curl -fsSL --retry 3 -o sw.js "https://aka.doubaocdn.com/s/IfRkS9ydBD"
+          file startup-1290x2796.png sw.js
       - name: commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add index.html apple-touch-icon.png icon-192.png icon-512.png manifest.webmanifest
-          if git diff --cached --quiet; then
-            echo "已是最新，跳过提交"
-            exit 0
-          fi
-          git commit -m "更新 index.html + 图标声明 v1.2.5 [skip ci]"
+          git add index.html apple-touch-icon.png icon-192.png icon-512.png manifest.webmanifest startup-*.png sw.js
+          if git diff --cached --quiet; then echo "已是最新，跳过提交"; exit 0; fi
+          git commit -m "更新 index.html + 启动图 + sw v1.2.6 [skip ci]"
           for i in 1 2 3; do
             if git push; then echo "pushed (try $i)"; exit 0; fi
             git pull --rebase --autostash origin main || true
           done
-          echo "push 依旧失败" >&2
           exit 1
