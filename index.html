@@ -36,10 +36,12 @@ html[data-theme="night"]{
 }
 html[data-fs="s"]{--fs:.9} html[data-fs="l"]{--fs:1.12}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;overscroll-behavior:none}
+html{-webkit-overflow-scrolling:auto}
 body{background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Helvetica Neue",sans-serif;
   font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;
-  -webkit-text-size-adjust:100%;text-size-adjust:100%}
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
+  touch-action:manipulation}
 button{font-family:inherit;border:none;background:none;color:inherit;cursor:pointer;padding:0}
 input{font-family:inherit}
 .serif{font-family:"Songti SC","Noto Serif SC",Georgia,"Times New Roman",serif}
@@ -186,6 +188,16 @@ html[data-mode="blank"] .kc{background:none;background-image:none;border-bottom:
   color:color-mix(in srgb,var(--ink) 42%,var(--paper));font-weight:500}
 html[data-mode="blank"] .k.on{background:none;background-image:none;color:color-mix(in srgb,var(--red) 82%,var(--ink));
   border-bottom-color:transparent;cursor:default}
+/* 回到顶部：滚动超过 420px 才浮出来，滑回顶部自动收起 */
+.totop{position:fixed;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:45;
+  width:42px;height:42px;border-radius:50%;background:var(--card);border:1.2px solid var(--line);
+  color:var(--ink-2);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px -12px rgba(20,16,12,.55);
+  opacity:0;pointer-events:none;transform:translateY(6px);
+  transition:opacity .22s,transform .22s,border-color .2s,color .2s}
+.totop.show{opacity:1;pointer-events:auto;transform:none}
+.totop:active{border-color:var(--red);color:var(--red)}
+.totop svg{width:18px;height:18px}
 .fab{display:none}
 html[data-mode="blank"] .fab{display:flex;gap:8px;position:fixed;right:14px;
   bottom:calc(18px + env(safe-area-inset-bottom));z-index:40}
@@ -322,7 +334,10 @@ html[data-mode="blank"] .hint{display:block}
   <button onclick="revealAll()">全部揭示</button>
   <button onclick="resetBlanks()">重新遮住</button>
 </div>
-  <div class="foot" id="foot"></div>
+  <button class="totop" id="totop" aria-label="回到顶部" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6"/><path d="M5 12l7-7 7 7"/></svg>
+</button>
+<div class="foot" id="foot"></div>
 </main>
 
 <div class="mask" id="mask" onclick="if(event.target===this)closeSet()">
@@ -767,7 +782,7 @@ document.getElementById('q').addEventListener('input',e=>{
 });
 
 
-const VER='1.2.6';
+const VER='1.2.7';
 const CHANGELOG=[
  {v:'1.2.5',d:'2026-11-14',t:'启动屏停留时间调正',items:[
    '上一版被 load 回调提前收掉，实际只停了 0.6 秒；去掉这个提前收的入口',
@@ -887,6 +902,52 @@ setTimeout(bootVer,600);
 })();
 </script>
 
+<script>
+/* ===== 移动端 App 化适配（与政治一页纸完整版一致） ===== */
+(function(){
+  // 回到顶部按钮：只在下滑 420px 后浮出，回到顶部/上滑自动收起
+  const t=document.getElementById('totop');
+  if(t){
+    let raf=0;
+    const upd=()=>{ raf=0; t.classList.toggle('show', window.scrollY>420); };
+    window.addEventListener('scroll',()=>{ if(!raf) raf=requestAnimationFrame(upd); },{passive:true});
+    upd();
+  }
+  // 禁止双指缩放（Safari 不认 user-scalable=no，只能拦手势）
+  document.addEventListener('gesturestart', e=>e.preventDefault(), {passive:false});
+  document.addEventListener('gesturechange', e=>e.preventDefault(), {passive:false});
+  document.addEventListener('touchmove', e=>{ if(e.touches.length>1) e.preventDefault(); }, {passive:false});
+  // 双击不放大
+  let lastTap=0;
+  document.addEventListener('touchend', e=>{
+    const now=Date.now();
+    if(now-lastTap<300 && e.touches.length===0){ e.preventDefault(); }
+    lastTap=now;
+  }, {passive:false});
+  // 顶部/底部不再橡皮筋拖动
+  let sy=0;
+  const inScroller=(el,dy)=>{
+    while(el && el!==document.body){
+      const st=getComputedStyle(el);
+      if(/(auto|scroll)/.test(st.overflowY) && el.scrollHeight>el.clientHeight+1){
+        const canUp=el.scrollTop>0, canDown=el.scrollTop+el.clientHeight<el.scrollHeight-1;
+        if((dy>0&&canUp)||(dy<0&&canDown)) return true;
+      }
+      el=el.parentElement;
+    }
+    return false;
+  };
+  document.addEventListener('touchstart', e=>{ if(e.touches.length===1) sy=e.touches[0].clientY; }, {passive:true});
+  document.addEventListener('touchmove', e=>{
+    if(e.touches.length!==1) return;
+    const dy=e.touches[0].clientY-sy; if(!dy) return;
+    if(inScroller(e.target,dy)) return;
+    const top=window.scrollY<=0;
+    const bot=window.scrollY+window.innerHeight>=document.documentElement.scrollHeight-1;
+    if((top&&dy>0)||(bot&&dy<0)) e.preventDefault();
+  }, {passive:false});
+})();
+</script>
 <script>
 /* 离线缓存：第二次打开直接用本地缓存渲染，避免每次重新下载 4MB 主文件 */
 if('serviceWorker' in navigator){
