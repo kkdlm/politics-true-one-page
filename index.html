@@ -218,9 +218,14 @@ html[data-mode="blank"] .hint{display:block}
 .mask{position:fixed;inset:0;z-index:60;background:rgba(20,16,12,.5);opacity:0;pointer-events:none;transition:.25s;
   display:flex;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px)}
 .mask.on{opacity:1;pointer-events:auto}
-.sheet{width:100%;max-width:520px;max-height:min(86vh,720px);overflow-y:auto;background:var(--card);
+.sheet{width:100%;max-width:520px;max-height:min(86vh,720px);background:var(--card);
   border-radius:18px 18px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom));
-  transform:translateY(14px);transition:.25s;box-shadow:0 -12px 40px -20px rgba(0,0,0,.6)}
+  transform:translateY(14px);transition:.25s;box-shadow:0 -12px 40px -20px rgba(0,0,0,.6);
+  overflow:hidden;display:flex;flex-direction:column}
+/* 面板内部滚动区：右沿故意伸出面板 12px 并被面板裁掉，iOS 的系统滚动指示条就画在看不见的地方 */
+#shBody{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:auto;
+  overscroll-behavior:contain;margin-right:-30px;padding-right:30px}
+#shBody::-webkit-scrollbar{display:none;width:0;height:0}
 .mask.on .sheet{transform:none}
 .sh-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .sh-head b{font-family:"Songti SC","Noto Serif SC",serif;font-size:16px;letter-spacing:.05em}
@@ -785,7 +790,7 @@ document.getElementById('q').addEventListener('input',e=>{
 });
 
 
-const VER='1.2.8';
+const VER='1.2.9';
 const CHANGELOG=[
  {v:'1.2.5',d:'2026-11-14',t:'启动屏停留时间调正',items:[
    '上一版被 load 回调提前收掉，实际只停了 0.6 秒；去掉这个提前收的入口',
